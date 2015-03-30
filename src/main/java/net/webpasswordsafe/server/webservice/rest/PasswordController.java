@@ -67,6 +67,37 @@ public class PasswordController
     private View jsonView;
     private static Logger LOG = Logger.getLogger(PasswordController.class);
 
+    @RequestMapping(value = "/password/generate", method = RequestMethod.GET)
+    public ModelAndView generatePassword(HttpServletRequest request, 
+            @RequestHeader(Constants.REST_AUTHN_USERNAME) String authnUsername,
+            @RequestHeader(Constants.REST_AUTHN_PASSWORD) String authnPassword)
+    {
+        boolean isSuccess = false;
+        String message = "";
+        String generatedPassword = "";
+        try
+        {
+            ServerSessionUtil.setIP(request.getRemoteAddr());
+            boolean isAuthnValid = loginService.login(authnUsername, authnPassword);
+            if (isAuthnValid)
+            {
+            	generatedPassword = passwordService.generatePassword();
+            	isSuccess = true;
+            }
+            else
+            {
+                message = "Invalid authentication";
+            }
+            loginService.logout();
+        }
+        catch (Exception e)
+        {
+            LOG.error(e.getMessage(), e);
+            isSuccess = false;
+            message = e.getMessage();
+        }
+        return createModelAndView(isSuccess, message, "generatedPassword", generatedPassword);
+    }
     
     @RequestMapping(value = "/passwords", method = RequestMethod.GET)
     public ModelAndView getPasswordList(@RequestParam(value="query",required=false) String query,
@@ -323,7 +354,6 @@ public class PasswordController
         return createModelAndView(isSuccess, message, "passwordId", passwordId);
     }
 
-    
     private ModelAndView createModelAndView(boolean isSuccess, String message, String dataKey, Object dataValue)
     {
         ModelAndView mv = new ModelAndView(jsonView);
