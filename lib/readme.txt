@@ -1,0 +1,1 @@
+mvn install:install-file -Dfile=gwt-sl-1.2.jar -DgroupId=net.sf.gwt-widget -DartifactId=gwt-sl -Dversion=1.2 -Dpackaging=jar -DgeneratePom=true
