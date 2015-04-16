@@ -126,6 +126,32 @@
             <groupId>net.sf.gilead</groupId>
             <artifactId>gilead-core</artifactId>
             <version>${gilead.version}</version>
+            <exclusions>			    
+				<exclusion>
+					<groupId>org.springframework</groupId>
+					<artifactId>spring</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.jboss.ejb3</groupId>
+					<artifactId>jboss-ejb3-core</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.jboss.jpa</groupId>
+					<artifactId>jboss-jpa-deployers</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.hibernate</groupId>
+					<artifactId>hibernate</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.hibernate</groupId>
+					<artifactId>hibernate-entitymanager</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.hibernate</groupId>
+					<artifactId>ejb3-persistence</artifactId>
+				</exclusion>
+			</exclusions>
         </dependency>
 		<dependency>
 			<groupId>net.sf.gilead</groupId>
@@ -322,6 +348,26 @@
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-site-plugin</artifactId>
 				<version>3.0</version>
+			</plugin>
+			
+			<plugin>
+				<groupId>org.mortbay.jetty</groupId>
+				<artifactId>jetty-maven-plugin</artifactId>
+				<configuration>
+					<webAppConfig>
+						<contextPath>/${project.artifactId}</contextPath>
+					</webAppConfig>
+					<systemProperties>
+						<systemProperty>
+							<name>jetty.port</name>
+							<value>7070</value>
+						</systemProperty>
+						<systemProperty>
+							<name>catalina.base</name>
+							<value>${project.build.directory}</value>
+						</systemProperty>
+					</systemProperties>
+				</configuration>
 			</plugin>
 
 		</plugins>
