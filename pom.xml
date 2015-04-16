@@ -31,6 +31,7 @@
 	</scm>
 
 	<properties>
+		<gilead.version>1.3.2</gilead.version>
 		<gwt.version>2.5.1</gwt.version>
 		<gxt.version>2.2.5</gxt.version>
 		<maven.compiler.source>1.6</maven.compiler.source>
@@ -121,11 +122,16 @@
 			<artifactId>bcprov-jdk16</artifactId>
 			<version>140</version>
 		</dependency>
+		 <dependency>
+            <groupId>net.sf.gilead</groupId>
+            <artifactId>gilead-core</artifactId>
+            <version>${gilead.version}</version>
+        </dependency>
 		<dependency>
 			<groupId>net.sf.gilead</groupId>
 			<artifactId>gilead4gwt</artifactId>
-			<version>1.3.2</version>
-			<exclusions>
+			<version>${gilead.version}</version>
+			<exclusions>			    
 				<exclusion>
 					<groupId>org.springframework</groupId>
 					<artifactId>spring</artifactId>
