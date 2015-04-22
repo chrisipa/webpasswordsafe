@@ -85,3 +85,8 @@ jdbc.driverClassName=com.mysql.jdbc.Driver
 jdbc.url=jdbc:mysql://localhost:3306/webpasswordsafe
 jdbc.validationQuery=select 1
 ```
+
+Installation (Mobile-Fronted)
+-------------
+* This web application is not optimized for mobile devices
+* There is an alternative web frontend called [pwsafe-mobile](https://github.com/chrisipa/pwsafe-mobile) which is using the RESTful web service interface for some basic functionalities
