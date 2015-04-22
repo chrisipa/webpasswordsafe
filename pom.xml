@@ -286,6 +286,7 @@
 	</dependencies>
 
 	<build>
+	    <finalName>${project.artifactId}</finalName>
 		<outputDirectory>war/WEB-INF/classes</outputDirectory>
 		<plugins>
 			<plugin>
