@@ -1,6 +1,8 @@
 webpasswordsafe
 =======
 
+Web-based, multi-user, secure password safe with delegated access controls.
+
 Overview
 -------------
 This is a fork of the original webpasswordsafe created by Josh Drummond.
