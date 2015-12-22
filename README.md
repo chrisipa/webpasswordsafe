@@ -16,7 +16,7 @@ Features
 * Multi language support (i18n)
 * Secure password hashing algorithm for database storage
 * Fulltext search for password data
-* Password history 
+* Password history
 * Brute force protection by blocking the IP address of the attacker
 * Permissions for passwords based on users and groups
 * LDAP integration for user and groups
@@ -35,7 +35,7 @@ Installation
 ```
 cd /opt/tomcat/webapps
 wget https://raw.githubusercontent.com/chrisipa/webpasswordsafe/master/public/webpasswordsafe.war
-mkdir webpasswordsafe 
+mkdir webpasswordsafe
 unzip webpasswordsafe.war -d webpasswordsafe
 rm webpasswordsafe.war
 ```
@@ -56,20 +56,20 @@ sudo apt-get install mysql-server
 * Create mysql database and system user:
 ```
 CREATE DATABASE webpasswordsafe CHARACTER SET utf8;
-CREATE USER 'webpasswordsafe'@'localhost' IDENTIFIED BY 'xxxxxxxxxxx';
-GRANT ALL PRIVILEGES ON webpasswordsafe.* TO 'webpasswordsafe'@'localhost';
+CREATE USER 'wps'@'localhost' IDENTIFIED BY 'xxxxxxxxxxx';
+GRANT ALL PRIVILEGES ON webpasswordsafe.* TO 'wps'@'localhost';
 ```
 * Download mysql JDBC connector to lib folder:
-``` 
+```
 cd /opt/tomcat/webapps/webpasswordsafe/WEB-INF/lib
 wget http://repo1.maven.org/maven2/mysql/mysql-connector-java/5.1.28/mysql-connector-java-5.1.28.jar
-``` 
+```
 * Configure mysql in hibernate settings:
-``` 
+```
 nano /opt/tomcat/webapps/webpasswordsafe/WEB-INF/jdbc.properties
 
 # Common settings
-jdbc.username=webpasswordsafe
+jdbc.username=wps
 jdbc.password=xxxxxxxxxxx
 
 # HSQL settings
