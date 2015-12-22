@@ -29,8 +29,8 @@ package net.webpasswordsafe.common.util;
 public class Constants
 {
     // versioning
-    public static final String VERSION = "1.4";
-    public static final String COPYRIGHT = "2008-2013 Josh Drummond";
+    public static final String VERSION = "1.4.1";
+    public static final String COPYRIGHT = "2008-2015 Josh Drummond";
     public static final String URL_WEBPASSWORDSAFE = "http://www.webpasswordsafe.net";
     public static final String URL_HELP =  "docs/UserGuide.html";
     public static final String URL_LICENSE = "docs/license.txt";
