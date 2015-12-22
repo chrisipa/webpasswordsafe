@@ -266,9 +266,8 @@ public class PasswordController
                 }
                 else
                 {
-                    passwordService.addPassword(password);
                     passwordId = String.valueOf(password.getId());
-                    isSuccess = true;
+                    isSuccess = passwordService.addPassword(password);
                 }
             }
             else
@@ -325,8 +324,7 @@ public class PasswordController
                         }
                         else
                         {
-                            passwordService.updatePassword(updatePassword);
-                            isSuccess = true;
+                            isSuccess = passwordService.updatePassword(updatePassword);
                         }
                     }
                     else

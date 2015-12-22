@@ -99,8 +99,9 @@ public class PasswordServiceImpl extends WPSXsrfProtectedServiceServlet implemen
     
     @Override
     @Transactional(propagation=Propagation.REQUIRED)
-    public void addPassword(Password password)
+    public boolean addPassword(Password password)
     {
+    	boolean isSuccess = false;
         Date now = new Date();
         String action = "add password";
         User loggedInUser = getLoggedInUser();
@@ -134,6 +135,7 @@ public class PasswordServiceImpl extends WPSXsrfProtectedServiceServlet implemen
                 
                 passwordDAO.makePersistent(password);
                 auditLogger.log(now, loggedInUser.getUsername(), ServerSessionUtil.getIP(), action, passwordTarget(password), true, "");
+                isSuccess = true;
             }
             else
             {
@@ -146,12 +148,15 @@ public class PasswordServiceImpl extends WPSXsrfProtectedServiceServlet implemen
             auditLogger.log(now, ServerSessionUtil.getUsername(), ServerSessionUtil.getIP(), action, passwordTarget(password), false, "not authorized");
             throw new RuntimeException("Not Authorized!");
         }
+        
+        return isSuccess;
     }
 
     @Override
     @Transactional(propagation=Propagation.REQUIRED)
-    public void updatePassword(Password updatePassword)
+    public boolean updatePassword(Password updatePassword)
     {
+    	boolean isSuccess = false;
         LOG.debug("updating password");
         Date now = new Date();
         String action = "update password";
@@ -223,6 +228,7 @@ public class PasswordServiceImpl extends WPSXsrfProtectedServiceServlet implemen
                     LOG.debug("no access to grant permissions");
                 }
                 auditLogger.log(now, loggedInUser.getUsername(), ServerSessionUtil.getIP(), action, passwordTarget(updatePassword), true, passwordMessage);
+                isSuccess = true;
             }
             else
             {
@@ -234,6 +240,8 @@ public class PasswordServiceImpl extends WPSXsrfProtectedServiceServlet implemen
         {
             auditLogger.log(now, loggedInUser.getUsername(), ServerSessionUtil.getIP(), action, passwordTarget(updatePassword), false, "write access denied");
         }
+        
+        return isSuccess;
     }
 
     @Override
@@ -388,7 +396,7 @@ public class PasswordServiceImpl extends WPSXsrfProtectedServiceServlet implemen
 
     @Override
     @Transactional(propagation=Propagation.REQUIRED)
-    public void addTemplate(Template template)
+    public boolean addTemplate(Template template)
     {
         Date now = new Date();
         String action = "add template";
@@ -396,13 +404,15 @@ public class PasswordServiceImpl extends WPSXsrfProtectedServiceServlet implemen
         template.setUser(loggedInUser);
         templateDAO.makePersistent(template);
         auditLogger.log(now, loggedInUser.getUsername(), ServerSessionUtil.getIP(), action, templateTarget(template), true, "");
+        return true;
     }
 
     @Override
     @Transactional(propagation=Propagation.REQUIRED)
-    public void updateTemplate(Template updateTemplate)
+    public boolean updateTemplate(Template updateTemplate)
     {
         LOG.debug("updating template");
+        boolean isSuccess = false;
         Date now = new Date();
         String action = "update template";
         User loggedInUser = getLoggedInUser();
@@ -431,18 +441,22 @@ public class PasswordServiceImpl extends WPSXsrfProtectedServiceServlet implemen
                 }
             }
             auditLogger.log(now, loggedInUser.getUsername(), ServerSessionUtil.getIP(), action, templateTarget(updateTemplate), true, templateMessage);
+            isSuccess = true;
         }
         else
         {
             auditLogger.log(now, loggedInUser.getUsername(), ServerSessionUtil.getIP(), action, templateTarget(updateTemplate), false, "invalid id or no access");
         }
+        
+        return isSuccess;
     }
 
     @Override
     @Transactional(propagation=Propagation.REQUIRED)
-    public void deleteTemplate(Template updateTemplate)
+    public boolean deleteTemplate(Template updateTemplate)
     {
         LOG.debug("deleting template");
+        boolean isSuccess = false;
         Date now = new Date();
         String action = "delete template";
         User loggedInUser = getLoggedInUser();
@@ -455,6 +469,7 @@ public class PasswordServiceImpl extends WPSXsrfProtectedServiceServlet implemen
             {
                 templateDAO.makeTransient(template);
                 auditLogger.log(now, loggedInUser.getUsername(), ServerSessionUtil.getIP(), action, templateTarget(template), true, "");
+                isSuccess = true;
             }
             else
             {
@@ -465,6 +480,8 @@ public class PasswordServiceImpl extends WPSXsrfProtectedServiceServlet implemen
         {
             auditLogger.log(now, loggedInUser.getUsername(), ServerSessionUtil.getIP(), action, templateTarget(updateTemplate), false, "invalid id or no access");
         }
+        
+        return isSuccess;
     }
     
     @Override

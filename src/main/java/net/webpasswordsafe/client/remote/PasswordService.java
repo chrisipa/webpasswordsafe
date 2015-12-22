@@ -39,8 +39,8 @@ import com.google.gwt.user.client.rpc.XsrfProtectedService;
  */
 public interface PasswordService extends XsrfProtectedService {
     
-    public void addPassword(Password password);
-    public void updatePassword(Password password);
+    public boolean addPassword(Password password);
+    public boolean updatePassword(Password password);
     public List<Password> searchPassword(String query, boolean activeOnly, Collection<Tag> tags, Match tagMatch);
     public String generatePassword();
     public String getCurrentPassword(long passwordId);
@@ -50,9 +50,9 @@ public interface PasswordService extends XsrfProtectedService {
     public boolean isPasswordTaken(String passwordName, String username, long ignorePasswordId);
     public List<PasswordAccessAudit> getPasswordAccessAuditData(long passwordId);
     public List<PasswordData> getPasswordHistoryData(long passwordId);
-    public void addTemplate(Template template);
-    public void updateTemplate(Template template);
-    public void deleteTemplate(Template template);
+    public boolean addTemplate(Template template);
+    public boolean updateTemplate(Template template);
+    public boolean deleteTemplate(Template template);
     public List<Template> getTemplates(boolean includeShared);
     public Template getTemplateWithDetails(long templateId);
     public boolean isTemplateTaken(String templateName, long ignoreTemplateId);
