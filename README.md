@@ -1,6 +1,8 @@
 webpasswordsafe
 =======
 
+[![Build Status](https://papke.it/jenkins/buildStatus/icon?job=webpasswordsafe)](https://papke.it/jenkins/job/webpasswordsafe/)
+
 Web-based, multi-user, secure password safe with delegated access controls.
 
 Overview
