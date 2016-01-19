@@ -36,7 +36,7 @@ Installation
 * Download and extract the war file to webapps folder:
 ```
 cd /opt/tomcat/webapps
-wget https://raw.githubusercontent.com/chrisipa/webpasswordsafe/master/public/webpasswordsafe.war
+wget https://papke.it/jenkins/job/webpasswordsafe/lastStableBuild/net.webpasswordsafe%24webpasswordsafe/artifact/net.webpasswordsafe/webpasswordsafe/1.4.1/webpasswordsafe-1.4.1.war -O webpasswordsafe.war
 mkdir webpasswordsafe
 unzip webpasswordsafe.war -d webpasswordsafe
 rm webpasswordsafe.war
