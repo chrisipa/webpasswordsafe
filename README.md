@@ -2,6 +2,7 @@ webpasswordsafe
 =======
 
 [![Build Status](https://papke.it/jenkins/buildStatus/icon?job=webpasswordsafe)](https://papke.it/jenkins/job/webpasswordsafe/)
+[![Code Analysis](https://img.shields.io/badge/code%20analysis-available-blue.svg)](https://papke.it/sonar/overview?id=69)
 
 Web-based, multi-user, secure password safe with delegated access controls.
 
