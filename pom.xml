@@ -11,7 +11,7 @@
 	Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 
 	USA -->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+		 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>net.webpasswordsafe</groupId>
 	<artifactId>webpasswordsafe</artifactId>
@@ -36,6 +36,13 @@
 		<gxt.version>2.2.5</gxt.version>
 		<maven.compiler.source>1.6</maven.compiler.source>
 		<maven.compiler.target>1.6</maven.compiler.target>
+		<registry>docker.io</registry>
+		<tenant>chrisipa</tenant>
+		<opt.folder>/opt</opt.folder>
+		<catalina.home>${opt.folder}/tomcat</catalina.home>
+		<tomcat.webapps.folder>${catalina.home}/webapps</tomcat.webapps.folder>
+		<docker.data.folder>${opt.folder}/docker/${project.artifactId}</docker.data.folder>
+		<hsqldb.data.folder>/data</hsqldb.data.folder>
 	</properties>
 
 	<repositories>
@@ -122,11 +129,11 @@
 			<artifactId>bcprov-jdk16</artifactId>
 			<version>140</version>
 		</dependency>
-		 <dependency>
-            <groupId>net.sf.gilead</groupId>
-            <artifactId>gilead-core</artifactId>
-            <version>${gilead.version}</version>
-            <exclusions>			    
+		<dependency>
+			<groupId>net.sf.gilead</groupId>
+			<artifactId>gilead-core</artifactId>
+			<version>${gilead.version}</version>
+			<exclusions>
 				<exclusion>
 					<groupId>org.springframework</groupId>
 					<artifactId>spring</artifactId>
@@ -152,12 +159,12 @@
 					<artifactId>ejb3-persistence</artifactId>
 				</exclusion>
 			</exclusions>
-        </dependency>
+		</dependency>
 		<dependency>
 			<groupId>net.sf.gilead</groupId>
 			<artifactId>gilead4gwt</artifactId>
 			<version>${gilead.version}</version>
-			<exclusions>			    
+			<exclusions>
 				<exclusion>
 					<groupId>org.springframework</groupId>
 					<artifactId>spring</artifactId>
@@ -283,10 +290,23 @@
 			<version>4.10</version>
 			<scope>test</scope>
 		</dependency>
+
+		<!-- JDBC dependencies -->
+		<dependency>
+			<groupId>mysql</groupId>
+			<artifactId>mysql-connector-java</artifactId>
+			<version>5.1.28</version>
+		</dependency>
+		<dependency>
+			<groupId>org.postgresql</groupId>
+			<artifactId>postgresql</artifactId>
+			<version>9.4-1201-jdbc41</version>
+		</dependency>
+
 	</dependencies>
 
 	<build>
-	    <finalName>${project.artifactId}</finalName>
+		<finalName>${project.artifactId}</finalName>
 		<outputDirectory>war/WEB-INF/classes</outputDirectory>
 		<plugins>
 			<plugin>
@@ -350,7 +370,7 @@
 				<artifactId>maven-site-plugin</artifactId>
 				<version>3.0</version>
 			</plugin>
-			
+
 			<plugin>
 				<groupId>org.mortbay.jetty</groupId>
 				<artifactId>jetty-maven-plugin</artifactId>
@@ -368,6 +388,96 @@
 							<value>${project.build.directory}</value>
 						</systemProperty>
 					</systemProperties>
+				</configuration>
+			</plugin>
+
+			<plugin>
+				<groupId>io.fabric8</groupId>
+				<artifactId>docker-maven-plugin</artifactId>
+				<extensions>true</extensions>
+				<configuration>
+					<verbose>true</verbose>
+					<registry>${registry}</registry>
+					<images>
+						<image>
+							<name>${tenant}/${project.artifactId}</name>
+							<alias>${project.artifactId}</alias>
+							<build>
+								<tags>
+									<tag>${project.version}</tag>
+								</tags>
+								<from>${tenant}/tomcat:7.0.70</from>
+								<optimise>true</optimise>
+								<volumes>
+									<volume>${hsqldb.data.folder}</volume>
+								</volumes>
+								<entryPoint>
+									<exec>
+										<args>/webpasswordsafe.sh</args>
+									</exec>
+								</entryPoint>
+								<cmd>
+									<exec>
+										<args>catalina.sh</args>
+										<args>run</args>
+									</exec>
+								</cmd>
+								<runCmds>
+									<!-- create data folder for embedded hsqldb -->
+									<run>mkdir ${hsqldb.data.folder}</run>
+
+									<!-- download zip file with java cryptography extension and unzip to jre security folder -->
+									<run>wget -q --no-cookies --header "Cookie: oraclelicense=accept-securebackup-cookie" http://download.oracle.com/otn-pub/java/jce/8/jce_policy-8.zip</run>
+									<run>unzip -q jce_policy-8.zip</run>
+									<run>cp UnlimitedJCEPolicyJDK8/*.jar $JAVA_HOME/jre/lib/security</run>
+									<run>rm -f jce_policy-8.zip</run>
+									<run>rm -rf UnlimitedJCEPolicyJDK8</run>
+								</runCmds>
+								<assembly>
+									<basedir>/</basedir>
+									<inline>
+										<dependencySets>
+											<dependencySet>
+												<includes>
+													<include>${project.groupId}:${project.artifactId}:${project.packaging}</include>
+												</includes>
+												<outputDirectory>${tomcat.webapps.folder}/${project.artifactId}</outputDirectory>
+												<unpack>true</unpack>
+											</dependencySet>
+										</dependencySets>
+										<fileSets>
+											<fileSet>
+												<directory>${project.basedir}/src/main/resources/docker/entrypoint</directory>
+												<outputDirectory>/</outputDirectory>
+												<includes>
+													<include>**/*</include>
+												</includes>
+											</fileSet>
+											<fileSet>
+												<directory>${project.basedir}/src/main/resources/docker/ROOT</directory>
+												<outputDirectory>${tomcat.webapps.folder}/ROOT</outputDirectory>
+												<includes>
+													<include>**/*</include>
+												</includes>
+											</fileSet>
+										</fileSets>
+									</inline>
+								</assembly>
+							</build>
+							<run>
+								<namingStrategy>alias</namingStrategy>
+								<volumes>
+									<bind>
+										<volume>${docker.data.folder}:${hsqldb.data.folder}</volume>
+									</bind>
+								</volumes>
+								<ports>
+									<port>8080:8080</port>
+									<port>8443:8443</port>
+								</ports>
+							</run>
+						</image>
+					</images>
 				</configuration>
 			</plugin>
 
