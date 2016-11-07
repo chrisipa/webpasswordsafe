@@ -400,13 +400,13 @@
 					<registry>${registry}</registry>
 					<images>
 						<image>
-							<name>${tenant}/${project.artifactId}</name>
+							<name>${registry}/${tenant}/${project.artifactId}</name>
 							<alias>${project.artifactId}</alias>
 							<build>
 								<tags>
 									<tag>${project.version}</tag>
 								</tags>
-								<from>${tenant}/tomcat:7.0.70</from>
+								<from>${registry}/${tenant}/tomcat:7.0.70</from>
 								<optimise>true</optimise>
 								<volumes>
 									<volume>${hsqldb.data.folder}</volume>
