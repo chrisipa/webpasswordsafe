@@ -1,0 +1,1 @@
+Web-based, multi-user, secure password safe with delegated access controls.
