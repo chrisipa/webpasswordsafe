@@ -170,3 +170,7 @@ See parent image: [chrisipa/tomcat](https://github.com/chrisipa/docker-library/t
 #### Accept self signed SSL certificates from Jenkins JRE
 
 See parent image: [chrisipa/jdk](https://github.com/chrisipa/docker-library/tree/master/debian-pom/java-pom/jdk#accept-self-signed-ssl-certificates-from-jre)
+
+### Caveats
+
+1. Access the GWT version of the password safe to configure your settings (default username: admin, default password: admin) [https://localhost:8443/webpasswordsafe](https://localhost:8443/webpasswordsafe)
