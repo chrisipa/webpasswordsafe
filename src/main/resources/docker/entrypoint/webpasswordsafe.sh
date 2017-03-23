@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # include parent entrypoint script
-source /tomcat.sh
+source /tomcat-base.sh
 
 # set environment variables
 if [ -z $PASSPHRASE ]
