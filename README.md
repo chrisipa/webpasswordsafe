@@ -1,4 +1,4 @@
-webpasswordsafe
+Web Password Safe
 =======
 
 [![Build Status](https://papke.it/jenkins/buildStatus/icon?job=webpasswordsafe)](https://papke.it/jenkins/job/webpasswordsafe/)
@@ -6,15 +6,15 @@ webpasswordsafe
 
 Web-based, multi-user, secure password safe with delegated access controls.
 
-Overview
--------------
+# Overview
+
 This is a fork of the original webpasswordsafe created by Josh Drummond.
 It was created to make this awesome web application as easy to build and use as possible.
 
 ![Screenshot](https://raw.githubusercontent.com/chrisipa/webpasswordsafe/master/public/screenshot_gui.png)
 
-Features
--------------
+# Features
+
 * Rich web application based on GWT and GXT
 * Multi language support (i18n)
 * Secure password hashing algorithm for database storage
@@ -26,70 +26,147 @@ Features
 * Detailled reports (users, groups, password access, password expiration, password permissions, ...)
 * RESTful web service interface for 3rd party applications
 
-Prerequisites
--------------
-* [Java 6](http://www.oracle.com/technetwork/java/javase/downloads/index.html) must be installed
-* [JCE](http://www.oracle.com/technetwork/java/javase/downloads/jce-6-download-429243.html) must be installed
-* Web application server (e.g. tomcat) must be installed
+# Installation
 
-Installation
--------------
-* Download and extract the war file to webapps folder:
-```
-cd /opt/tomcat/webapps
-wget https://papke.it/jenkins/job/webpasswordsafe/lastStableBuild/net.webpasswordsafe%24webpasswordsafe/artifact/net.webpasswordsafe/webpasswordsafe/1.4.1/webpasswordsafe-1.4.1.war -O webpasswordsafe.war
-mkdir webpasswordsafe
-unzip webpasswordsafe.war -d webpasswordsafe
-rm webpasswordsafe.war
-```
-* Change master password:
-```
-nano /opt/tomcat/webapps/webpasswordsafe/WEB-INF/encryption.properties
+* Manual installation instructions can be found [here](INSTALLATION.md)
 
-encryptor.jasypt.password=xxxxxxxxxxxxxxxxxxxx
-```
-* By default the applicaton is using a HSQL database
+# Docker
 
-Installation (MySQL)
--------------
-* Install required os packages:
-```
-sudo apt-get install mysql-server
-```
-* Create mysql database and system user:
-```
-CREATE DATABASE webpasswordsafe CHARACTER SET utf8;
-CREATE USER 'wps'@'localhost' IDENTIFIED BY 'xxxxxxxxxxx';
-GRANT ALL PRIVILEGES ON webpasswordsafe.* TO 'wps'@'localhost';
-```
-* Download mysql JDBC connector to lib folder:
-```
-cd /opt/tomcat/webapps/webpasswordsafe/WEB-INF/lib
-wget http://repo1.maven.org/maven2/mysql/mysql-connector-java/5.1.28/mysql-connector-java-5.1.28.jar
-```
-* Configure mysql in hibernate settings:
-```
-nano /opt/tomcat/webapps/webpasswordsafe/WEB-INF/jdbc.properties
+The Web Password safe docker image is based on Debian Jessie, Oracle JDK 8 and Apache Tomcat 7.
 
-# Common settings
-jdbc.username=wps
-jdbc.password=xxxxxxxxxxx
+## Description
 
-# HSQL settings
-#hibernate.dialect=org.hibernate.dialect.HSQLDialect
-#jdbc.driverClassName=org.hsqldb.jdbcDriver
-#jdbc.url=jdbc:hsqldb:file:/tmp/webpasswordsafedb
-#jdbc.url=jdbc:hsqldb:hsql://localhost/
-#jdbc.validationQuery=select 1 from INFORMATION_SCHEMA.SYSTEM_USERS
+This password safe docker image contains the following software components:
 
-# MySQL/MariaDB settings
-hibernate.dialect=org.hibernate.dialect.MySQL5InnoDBDialect
-jdbc.driverClassName=com.mysql.jdbc.Driver
-jdbc.url=jdbc:mysql://localhost:3306/webpasswordsafe
-jdbc.validationQuery=select 1
-```
+ - [Oracle JDK 8](http://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html)
+ - [Apache Tomcat 7](http://tomcat.apache.org)
+ - [webpasswordsafe](https://github.com/chrisipa/webpasswordsafe)
 
-Installation (Mobile-Fronted)
--------------
-* This web application is not optimized for mobile devices
-* There is an alternative web frontend called [pwsafe-mobile](https://github.com/chrisipa/pwsafe-mobile) which is using the RESTful web service interface for some basic functionalities
+For data storage you will need a relational database. At the moment, these databases are supported:
+
+ - [HSQLDB](http://hsqldb.org/)
+ - [MySQL](http://www.mysql.com/)
+ - [PostgreSQL](http://www.postgresql.org/)
+
+### Ports
+
+Both tomcat http ports are exposed:
+
+ - 8080 (http)
+ - 8443 (https)
+
+## How to run the container
+
+### Environment variables
+
+When you start the password safe container, you can adjust the configuration by passing one or more environment variables on the `docker run` command line:
+
+#### `PASSPHRASE`
+
+ - The passphrase for jasypt encryptor
+ - Please specify a strong password here
+ - You will not be able to retrieve old passwords when you change it after initial configuration
+ - Default value: `w3bp@$$w0rd$@f3k3y`
+
+#### `DB_TYPE`
+
+ - The database type to use
+ - Possible values: `hsqldb`, `mysql`, `postgresql`
+ - Default value: `hsqldb`
+
+#### `DB_HOST`
+
+ - The database hostname or ip address as string
+ - Default value: `$MYSQL_PORT_3306_TCP_ADDR` or `webpasswordsafe-mysql`
+
+#### `DB_PORT`
+
+ - The database port as a numeric value
+ - Default value: `$MYSQL_PORT_3306_TCP_PORT` or `3306`
+
+#### `DB_NAME`
+
+ - The database name as string
+ - Default value: `$MYSQL_ENV_MYSQL_DATABASE` or `webpasswordsafe`
+
+#### `DB_USER`
+
+ - The database user as string
+ - Default value: `$MYSQL_ENV_MYSQL_USER` or `webpasswordsafe`
+
+#### `DB_PASS`
+
+ - The database password as string
+ - Default value: `$MYSQL_ENV_MYSQL_PASSWORD` or `my-password`
+
+### Using docker
+
+#### Example 1: Evaluation usage without persistent data storage
+
+* Run password safe container in foreground with this command:
+  ```
+  docker run --rm -p 8080:8080 -p 8443:8443 chrisipa/webpasswordsafe
+  ```
+
+#### Example 2: MySQL server on external host with default port
+
+1. Make sure that your mysql database server allows [external access](http://www.cyberciti.biz/tips/how-do-i-enable-remote-access-to-mysql-database-server.html)
+
+2. Create a database with name `webpasswordsafe` and allow user `webpasswordsafe` to access it
+
+3. Run the password safe container with the following command:
+  ```
+  docker run --name webpasswordsafe-tomcat -d -p 8080:8080 -p 8443:8443 -e PASSPHRASE=my-passphrase -e DB_HOST=192.168.0.1 -e DB_PASS=my-password chrisipa/webpasswordsafe
+  ```
+
+#### Example 3: MySQL server as docker container on the same docker host
+
+1. Run mysql container with this command:
+  ```
+  docker run --name webpasswordsafe-mysql -d -e MYSQL_ROOT_PASSWORD=my-root-password -e MYSQL_DATABASE=webpasswordsafe -e MYSQL_USER=webpasswordsafe -e MYSQL_PASSWORD=my-password -v /opt/docker/webpasswordsafe/mysql:/var/lib/mysql mysql:latest
+  ```
+
+2. Run password safe container by linking to the newly created mysql container:
+  ```
+  docker run --name webpasswordsafe-tomcat --link webpasswordsafe-mysql:mysql -d -p 8080:8080 -p 8443:8443 -e PASSPHRASE=my-passphrase chrisipa/webpasswordsafe
+  ```
+
+#### Example 4: Running docker containers with compose
+
+1. Create docker compose file `docker-compose.yml` with your configuration data:
+  ```yml
+  mysql:
+    image: mysql
+    volumes:
+      - /opt/docker/webpasswordsafe/mysql:/var/lib/mysql
+    environment:
+      - MYSQL_ROOT_PASSWORD=my-root-password
+      - MYSQL_DATABASE=webpasswordsafe
+      - MYSQL_USER=webpasswordsafe
+      - MYSQL_PASSWORD=my-password
+
+  tomcat:
+    image: chrisipa/webpasswordsafe
+    links:
+      - mysql:mysql
+    ports:
+      - 8080:8080
+      - 8443:8443
+    environment:
+      - PASSPHRASE=my-passphrase
+  ```
+
+2. Run docker containers with docker compose:
+  ```
+  docker-compose up -d
+  ```
+
+### Advanced topics
+
+#### Use your own SSL certificates
+
+See parent image: [chrisipa/tomcat](https://github.com/chrisipa/docker-library/tree/master/debian-pom/java-pom/tomcat-pom/tomcat#use-your-own-ssl-certificates)
+
+#### Accept self signed SSL certificates from Jenkins JRE
+
+See parent image: [chrisipa/jdk](https://github.com/chrisipa/docker-library/tree/master/debian-pom/java-pom/jdk#accept-self-signed-ssl-certificates-from-jre)

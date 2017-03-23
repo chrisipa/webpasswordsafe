@@ -20,7 +20,7 @@ then
 	then
 		DB_HOST="$MYSQL_PORT_3306_TCP_ADDR"
 	else 
-		DB_HOST="pwsafe-mysql"
+		DB_HOST="webpasswordsafe-mysql"
 	fi
 fi
 
@@ -40,7 +40,7 @@ then
 	then
 		DB_NAME="$MYSQL_ENV_MYSQL_DATABASE"
 	else
-		DB_NAME="pwsafe"
+		DB_NAME="webpasswordsafe"
 	fi
 fi
 
@@ -50,7 +50,7 @@ then
 	then
 		DB_USER="$MYSQL_ENV_MYSQL_USER"
 	else
-		DB_USER="pwsafe"
+		DB_USER="webpasswordsafe"
 	fi
 fi
 
